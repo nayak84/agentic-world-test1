@@ -1,0 +1,144 @@
+Superwork World Starter — Educational Use Only License
+Version 1.0
+
+Copyright © 2026 Josh Lee. All rights reserved.
+
+This repository is SOURCE-AVAILABLE, NOT OPEN SOURCE. Its contents are
+visible to the public, but they are licensed only for the limited educational
+purpose stated in this License.
+
+1. Definitions
+
+   "Licensor" means Josh Lee.
+
+   "Starter Content" means the original code, templates, documentation,
+   examples and other Superwork-authored materials in this repository as
+   provided by the Licensor — including its documentation, assignment and
+   worksheet templates, example World, seed and scenario files, and agent
+   instructions — but not Third-Party Components or Participant Work.
+
+   "Third-Party Components" means software and other material that this
+   repository uses or references but that is licensed under its own terms,
+   including the npm packages @superwork/world-spec, @superwork/cli and yaml,
+   and any other dependency installed into node_modules.
+
+   "Participant Work" means original material you create yourself while doing
+   the homework, such as your own World definition, your answers in the
+   assignment files, your scenarios and your evidence.
+
+   "Permitted Purpose" means (a) participating in the Agentic World Bootcamp,
+   and (b) completing, submitting and personally studying your own educational
+   homework for it.
+
+2. Ownership
+
+   (a) The Licensor owns the Starter Content.
+   (b) You retain ownership of your original Participant Work. Nothing in this
+       License transfers ownership of your Participant Work to the Licensor;
+       the permissions you give by submitting it are set out in Section 7.
+   (c) Your ownership of your Participant Work does not grant you any right to
+       use, reuse or redistribute the Starter Content — including its
+       templates, documentation, examples or other Superwork-authored
+       materials, whether or not they appear inside your Participant Work —
+       except as this License permits.
+   (d) Third-Party Components retain their original licenses (Section 6).
+
+3. License grant
+
+   Subject to this License, the Licensor grants you a personal, worldwide,
+   non-exclusive, non-transferable, non-sublicensable, royalty-free license to
+   view, download, clone, fork, run and modify the Starter Content, solely for
+   the Permitted Purpose.
+
+   You may share your homework repository (your fork or a zip of it) with the
+   Bootcamp's instructors and reviewers for the Permitted Purpose, and you may
+   keep it in your own GitHub account as a record of your coursework, provided
+   this License and the NOTICE file remain included.
+
+4. Restrictions
+
+   Except as expressly permitted above, you may not, and may not allow anyone
+   else to:
+
+   (a) use the Starter Content for any commercial purpose, including paid
+       training, consulting, services or internal business operations;
+   (b) use the Starter Content, or anything derived from it, in production or
+       to operate real business processes;
+   (c) use the Starter Content to develop, train, benchmark or improve a
+       product or service that competes with Superwork;
+   (d) redistribute, publish or offer the Starter Content, or a derivative of
+       it, as a product, template, starter kit, course material, framework or
+       library, whether free or paid;
+   (e) incorporate the Starter Content, or a derivative of it, into any
+       third-party product, service, platform or dataset;
+   (f) remove or alter this License, the NOTICE file or any copyright notice.
+
+5. GitHub
+
+   Nothing in this License restricts the rights GitHub users have under the
+   GitHub Terms of Service to view and fork a public repository on GitHub.
+   Forks remain subject to this License; forking does not grant any right
+   beyond it.
+
+6. Third-Party Components
+
+   Third-Party Components are not licensed under this License. They are
+   governed by their own licenses, which this License does not change or
+   restrict: @superwork/world-spec and @superwork/cli are published under the
+   MIT License, and yaml under the ISC License. See the license files in
+   node_modules.
+
+7. Submitted homework
+
+   (a) Review license. By submitting your homework (a repository or a ZIP),
+       you grant the Licensor, and the instructors and reviewers acting on the
+       Licensor's behalf to deliver the Bootcamp, a non-exclusive,
+       royalty-free license to use your submission as needed to deliver the
+       Bootcamp and its review service, namely to:
+         (i)    access and review the submitted repository or ZIP;
+         (ii)   copy it into a private review environment;
+         (iii)  import its World into the private Superwork Studio;
+         (iv)   validate, execute, test, simulate, inspect and analyze the
+                submitted World and scenarios;
+         (v)    display and discuss the submission with you during feedback
+                and 1:1 review sessions;
+         (vi)   make the temporary technical copies necessary for these
+                activities; and
+         (vii)  provide feedback and suggested modifications.
+
+   (b) De-identified learnings. You also grant the Licensor a non-exclusive,
+       perpetual, royalty-free right, after de-identifying, normalizing,
+       aggregating or generalizing a submission so that the resulting material
+       does not identify, and is not reasonably capable of being used to
+       identify, the participant, the participant's employer, any client or
+       any individual, to derive from it patterns, structures, examples,
+       statistics and learnings, and to use them for Superwork product
+       improvement, education, research and Superwork Library development.
+
+   (c) Limits. These permissions do not transfer ownership of your original
+       Participant Work. They do not include a right to publicly redistribute
+       your raw submission.
+
+   (d) Your content. Submit only material you are allowed to share. Do not
+       include confidential information, personal data, credentials or
+       secrets (see the README's sensitive-information warning).
+
+8. Termination
+
+   This License terminates automatically if you breach it. On termination you
+   must stop using the Starter Content and delete copies you control, except
+   for your own Participant Work to the extent it does not contain Starter
+   Content.
+
+9. No warranty; limitation of liability
+
+   THE STARTER CONTENT IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+   PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE LICENSOR BE
+   LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM OR IN
+   CONNECTION WITH THE STARTER CONTENT OR ITS USE.
+
+10. Reservation of rights
+
+   All rights not expressly granted are reserved by the Licensor. For any use
+   outside the Permitted Purpose, contact the Licensor for a separate license.

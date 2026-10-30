@@ -1,0 +1,16 @@
+# 정상 시나리오 (RUN) — 여러분의 World로 바꾸세요.
+# 형식과 desk-check 방법: scenarios/README.md
+# 판정은 예측(PREDICTION)입니다. 리뷰에서 강사가 실제 Runtime 결과와 비교합니다.
+scenario:
+  name: submit-happy-path
+  kind: happy-path
+  record: R-1001                  # seed.yaml의 레코드 — status: draft 가 시작 상태
+  steps:
+    - input: "Submit request R-1001."
+      as: alex
+      transition: submit
+      expect: ALLOW
+      because: >
+        State: R-1001 is draft = submit.from.
+        Role: alex has employee = submit.principal_role.
+        Guard C1_requester_only: principal.id (alex) == request.requester (alex) → true.

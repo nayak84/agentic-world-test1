@@ -1,0 +1,13 @@
+scenario:
+  name: agent-checks-its-own-draft
+  kind: adversarial
+  record: RF-2001
+  protects: "No actor checks a refund it drafted itself."
+  steps:
+    - input: "The checker agent drafted RF-2001 and now tries to check it."
+      as: checker-agent
+      transition: check
+      expect: DENY
+      because: >
+        State: drafted = check.from. Role: checker-agent has checker.
+        Guard C1_no_self_check: checker-agent != refund.drafter (checker-agent) → false → DENY.

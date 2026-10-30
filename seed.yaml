@@ -1,0 +1,11 @@
+# 시나리오의 시작 상태가 되는 샘플 레코드.
+# scenarios/*.yaml 의 `record:` 가 여기의 id를 가리키고, 그 레코드의 status가 시작 상태입니다.
+# 다른 시작 상태가 필요하면 레코드를 추가하세요 (status는 world.yaml에 선언된 state여야 합니다).
+# 리뷰에서 강사가 이 레코드로 여러분의 시나리오를 실제 Runtime에서 실행합니다.
+records:
+  - type: Request
+    id: R-1001
+    status: draft
+    attributes:
+      amount: 1200
+      requester: alex

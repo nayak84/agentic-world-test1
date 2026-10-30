@@ -1,0 +1,17 @@
+# One scenario = who tries which transition on which record, and what you PREDICT the World decides.
+# `record`, `as` and `transition` must match seed.yaml, the principals and the transitions exactly.
+# Desk-check order: state → role → guards → global constraints (scenarios/README.md).
+scenario:
+  name: todo-scenario-name
+  kind: happy-path                 # happy-path | adversarial
+  record: ITEM-1001
+  protects: ""                     # adversarial only: the safety property you are testing
+  steps:
+    - input: "TODO: what happens, in plain words."
+      as: person-a
+      transition: finish
+      expect: ALLOW                # your prediction: ALLOW or DENY
+      because: >
+        State: ITEM-1001 is open = finish.from.
+        Role: person-a has worker = finish.principal_role.
+        Guard C1_owner_only: principal.id (person-a) == item.owner (person-a) → true.

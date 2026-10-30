@@ -1,0 +1,63 @@
+# ─────────────────────────────────────────────
+#  Your Superwork World
+#  이 파일이 여러분의 세계 전체입니다. 예시(구매 요청)를 여러분의 업무로 바꾸세요.
+#  결정의 이유는 assignment/ 에 기록하고,
+#  바꿀 때마다 반드시:  npm run validate
+#  이 파일은 저장소 루트에 두세요 (리뷰 Import 규약).
+# ─────────────────────────────────────────────
+
+world:
+  id: my-world                     # 여러분의 World id (예: procurement-approval)
+  version: 0.1.0
+  spec: superwork.world/v1         # 언어 버전 — 수정하지 마세요
+  mission: >
+    TODO: 이 세계가 완수하려는 일을 한 문장으로.
+    (예: Process purchase requests safely from submission to delivery.)
+
+# E — Entities: 무엇이 존재하고 추적되는가? (assignment/entity-decisions.md)
+entities:
+  # 예시 — 여러분의 도메인으로 교체하세요
+  Request:
+    attributes:
+      id: string
+      amount: money
+      requester: ref(Employee)
+      status: state
+    owned_state: true              # 상태기계를 갖는 엔티티는 하나로 시작하세요
+  Employee:
+    attributes:
+      id: string
+      name: string
+      manager: ref(Employee)
+
+# S — States: 주인공 Entity가 흐름 속 어디에 있는가?
+states:
+  Request:
+    - draft
+    - submitted
+    # TODO: 여러분의 상태들
+
+terminal_states: []                # 최종 사실 (예: [closed, rejected])
+
+# T — Transitions: 무엇이 상태를 바꾸고, 누가 할 수 있는가?
+transitions:
+  submit:
+    from: draft
+    to: submitted
+    principal_role: employee
+    guards: [C1_requester_only]
+
+# C — Constraints: 무엇이 절대 허용되면 안 되는가?
+constraints:
+  C1_requester_only:
+    expr: principal.id == request.requester
+    message: Only the requester can submit.
+
+# 행위자 — 시나리오의 `as`는 여기의 id를 씁니다
+principals:
+  - id: alex
+    name: Alex
+    roles: [employee]
+  - id: blake
+    name: Blake
+    roles: [employee]

@@ -1,0 +1,20 @@
+# Synthetic records for the Mini Agentic World.
+records:
+  - type: Actor
+    id: drafter-agent
+    attributes: { name: Drafter Agent }
+  - type: Actor
+    id: checker-agent
+    attributes: { name: Checker Agent }
+  - type: Refund
+    id: RF-1001
+    status: drafted
+    attributes: { amount: 120, drafter: drafter-agent, checker: "", senior_approval: "no" }
+  - type: Refund
+    id: RF-2001
+    status: drafted
+    attributes: { amount: 80, drafter: checker-agent, checker: "", senior_approval: "no" }
+  - type: Refund
+    id: RF-3001
+    status: checked
+    attributes: { amount: 900, drafter: drafter-agent, checker: checker-agent, senior_approval: "no" }

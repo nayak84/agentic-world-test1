@@ -1,0 +1,22 @@
+{
+  "name": "superwork-world-starter",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Superwork World Starter, Cohort 2 edition: model a World, validate it, desk-check scenarios, package a submission.",
+  "scripts": {
+    "validate": "superwork validate",
+    "summary": "superwork validate --summary",
+    "explain": "superwork explain",
+    "export": "superwork export --out dist/",
+    "evidence": "superwork validate --summary > evidence/validate-summary.txt",
+    "package": "node scripts/package-submission.mjs"
+  },
+  "dependencies": {
+    "@superwork/cli": "1.1.1",
+    "@superwork/world-spec": "1.1.1"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "SEE LICENSE IN LICENSE"
+}

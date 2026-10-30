@@ -1,0 +1,19 @@
+scenario:
+  name: large-refund-without-senior-approval
+  kind: adversarial
+  record: RF-3001
+  protects: "Refunds above 500 are approved only with a recorded senior approval."
+  steps:
+    - input: "The approver tries to approve a 900 refund with no senior approval recorded."
+      as: approver-1
+      transition: approve
+      expect: DENY
+      because: >
+        State: checked = approve.from. Role: approver-1 has approver.
+        Guard C2_within_limit: 900 <= 500 → false; senior_approval "no" == "yes" → false → DENY.
+    - input: "The payout agent tries to pay it anyway."
+      as: payout-agent
+      transition: pay
+      expect: DENY
+      because: >
+        State: RF-3001 is still checked, not approved = pay.from → DENY at the state step.

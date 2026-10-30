@@ -1,0 +1,92 @@
+# ─────────────────────────────────────────────
+#  Mini Agentic World (Day 2 example, synthetic data only)
+#  Two AI agents and one person work on a refund. AI proposes. World decides. Runtime commits.
+#   - drafter-agent drafts the refund (proposal)
+#   - checker-agent checks the draft; it may never check its own draft (separation of duties)
+#   - a person approves; large refunds also need a recorded senior approval
+#   - payout-agent pays only what a person approved
+# ─────────────────────────────────────────────
+
+world:
+  id: mini-refund-world
+  version: 0.1.0
+  spec: superwork.world/v1
+  mission: >
+    Every refund that is paid was drafted by one actor, checked by a different actor and
+    approved by an accountable person within the approval limit.
+
+entities:
+  Refund:
+    attributes:
+      id: string
+      amount: money
+      drafter: ref(Actor)          # who drafted it (set when drafting)
+      checker: ref(Actor)          # who checked it
+      senior_approval: string      # "yes" or "no" (write flags as strings, not true/false)
+      status: state
+    owned_state: true
+  Actor:
+    attributes:
+      id: string
+      name: string
+
+states:
+  Refund:
+    - requested
+    - drafted
+    - checked
+    - approved
+    - paid
+    - rejected
+
+terminal_states: [paid, rejected]
+
+transitions:
+  draft:
+    from: requested
+    to: drafted
+    principal_role: drafter
+  check:
+    from: drafted
+    to: checked
+    principal_role: checker
+    guards: [C1_no_self_check]
+  approve:
+    from: checked
+    to: approved
+    principal_role: approver
+    guards: [C2_within_limit]
+  reject:
+    from: [drafted, checked]
+    to: rejected
+    principal_role: approver
+  pay:
+    from: approved
+    to: paid
+    principal_role: payer
+
+constraints:
+  C1_no_self_check:
+    expr: principal.id != refund.drafter
+    message: The actor who drafted a refund cannot check it.
+  C2_within_limit:
+    expr: refund.amount <= 500 or refund.senior_approval == "yes"
+    message: Refunds above 500 need a recorded senior approval.
+  C3_amount_positive:
+    expr: refund.amount > 0
+    message: A refund amount must be positive.
+    scope: global
+
+principals:
+  - id: drafter-agent
+    name: Drafter Agent
+    roles: [drafter]
+  - id: checker-agent
+    name: Checker Agent
+    roles: [checker, drafter]
+  - id: approver-1
+    name: Approver (person)
+    roles: [approver]
+  - id: payout-agent
+    name: Payout Agent
+    roles: [payer]

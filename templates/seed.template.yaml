@@ -1,0 +1,9 @@
+# Seed records: the starting state of your scenarios.
+# A scenario's `record:` is one of these ids; that record's status is where the scenario starts.
+# Every status must be a state declared in world.yaml. Use example data only (no real names, customers or amounts).
+records:
+  - type: Item
+    id: ITEM-1001
+    status: open
+    attributes:
+      owner: person-a

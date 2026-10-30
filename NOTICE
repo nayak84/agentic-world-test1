@@ -1,0 +1,54 @@
+Superwork World Starter — Bootcamp Homework Edition
+Copyright © 2026 Josh Lee. All rights reserved.
+
+This repository is source-available, not open source.
+
+Ownership
+- Josh Lee owns this repository's original code, templates, documentation,
+  examples and other Superwork-authored materials ("Starter Content").
+- Participants retain ownership of the original homework they create using
+  this starter (their World, answers, scenarios and evidence).
+- Owning your homework does not give you rights to reuse or redistribute the
+  Starter Content — its templates, documentation, examples or other
+  Superwork-authored materials — outside the Educational Use license.
+
+Submitted homework (LICENSE Section 7)
+- By submitting, participants allow Josh Lee, and the instructors and
+  reviewers acting on his behalf, to review the repository or ZIP, copy it
+  into a private review environment, import it into the private Superwork
+  Studio, validate, execute, test, simulate, inspect and analyze it, display
+  and discuss it in feedback and 1:1 review sessions, make the temporary
+  copies these require, and provide feedback and suggested modifications.
+- Participants also allow Josh Lee, after de-identifying, normalizing,
+  aggregating or generalizing a submission so that the result does not
+  identify, and is not reasonably capable of being used to identify, the
+  participant, the participant's employer, any client or any individual, to
+  derive patterns, structures, examples, statistics and learnings from it for
+  Superwork product improvement, education, research and Superwork Library
+  development.
+- Ownership of the original homework stays with the participant. The raw
+  submission is not publicly redistributed.
+
+License
+The Starter Content is licensed under the Superwork World Starter Educational
+Use Only License (see LICENSE), solely for participation in the Agentic World
+Bootcamp and personal educational homework. Commercial use, production use,
+competitive product development, redistribution as a product, template or
+framework, and incorporation into third-party products or services are not
+permitted.
+
+Nothing here limits the rights to view and fork this public repository on
+GitHub under the GitHub Terms of Service; forks remain subject to LICENSE.
+
+Third-party components
+Third-party components keep their original licenses, which LICENSE does not
+change or restrict:
+
+  @superwork/world-spec  — MIT License (npm package)
+  @superwork/cli         — MIT License (npm package)
+  yaml                   — ISC License (npm dependency of @superwork/world-spec)
+  Other packages installed into node_modules are governed by their own
+  license files.
+
+Superwork and Superwork Studio are proprietary and are not part of this
+repository. No license to them is granted.

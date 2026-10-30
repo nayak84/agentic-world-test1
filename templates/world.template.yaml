@@ -1,0 +1,54 @@
+# ─────────────────────────────────────────────
+#  World template: the smallest World that validates.
+#  Copy it over world.yaml (cp templates/world.template.yaml world.yaml), then replace every
+#  TODO with your own domain. Run npm run validate after every change.
+# ─────────────────────────────────────────────
+
+world:
+  id: todo-world-id                # lowercase letters, digits, hyphens (e.g. purchase-approval)
+  version: 0.1.0
+  spec: superwork.world/v1         # do not change
+  mission: >
+    TODO: one sentence that names the outcome (a state of the world that counts as success),
+    not an activity.
+
+# E: what exists and is tracked?
+entities:
+  Item:                            # TODO: your core Work entity (the one with a lifecycle)
+    attributes:
+      id: string
+      owner: ref(Person)           # who created it (compared with principal.id in guards)
+      status: state
+    owned_state: true              # exactly one entity owns the state machine
+  Person:
+    attributes:
+      id: string
+      name: string
+
+# S: where can the core entity be?
+states:
+  Item:
+    - open
+    - done
+
+terminal_states: [done]
+
+# T: what changes the state, and who may do it?
+transitions:
+  finish:
+    from: open
+    to: done
+    principal_role: worker
+    guards: [C1_owner_only]
+
+# C: what must never be allowed?
+constraints:
+  C1_owner_only:
+    expr: principal.id == item.owner
+    message: Only the owner can finish this item.
+
+# Principals: the actors your scenarios use (`as:` is a principal id)
+principals:
+  - id: person-a
+    name: Person A
+    roles: [worker]
