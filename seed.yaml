@@ -2,10 +2,152 @@
 # scenarios/*.yaml 의 `record:` 가 여기의 id를 가리키고, 그 레코드의 status가 시작 상태입니다.
 # 다른 시작 상태가 필요하면 레코드를 추가하세요 (status는 world.yaml에 선언된 state여야 합니다).
 # 리뷰에서 강사가 이 레코드로 여러분의 시나리오를 실제 Runtime에서 실행합니다.
+
 records:
-  - type: Request
-    id: R-1001
-    status: draft
+  # 마스터 데이터: MaterialPart
+  - type: MaterialPart
+    id: can-21700
     attributes:
-      amount: 1200
-      requester: alex
+      category: can
+      spec: "21700-steel-can-v1"
+
+  - type: MaterialPart
+    id: topcap-21700
+    attributes:
+      category: top_cap
+      spec: "21700-cid-topcap-v1"
+
+  # 레코드 1: 초기 입력 단계 (Drafting) - 정상 시나리오 (Happy Path) 시작점
+  - type: Sheet
+    id: S-1001
+    status: drafting
+    attributes:
+      engineer: eng-1
+      target_capacity: 5000
+      target_energy: 18.2
+      target_porosity: 25
+      target_np_balance: 1.08
+      height: 70.0
+      diameter: 21.0
+      l2_height: 68.5
+      top_cap: topcap-21700
+      can: can-21700
+      anode_width: 65.0
+      cathode_width: 63.5
+      separator_width: 67.0
+      formula: "NMC811-Gr"
+      materials: "Single-Crystal-NMC811"
+      loading: 25.0
+      thickness: 130
+      length: 1050
+      electrolyte_type: "LiPF6-EC-EMC"
+      injection_amount: 6.2
+      injection_fraction: 0.88
+      iteration_count: 0
+      max_iterations: 5
+      is_target_achievable: "yes"
+      is_guideline_satisfied: "yes"
+      is_product_allowed: "no"
+      analysis_report_attached: "yes"
+      has_rework_reason: "no"
+      has_abandon_reason: "no"
+      has_revision_proposal: "no"
+      # 개선 1 & 2: 채택 후보 및 Waiver
+      has_selected_candidate: "yes"
+      selected_candidate: "CAND-01"
+      has_waiver_approval: "no"
+      waiver_approver: ""
+      electrochemical_analysis_report: "목표 특성 및 모든 설계가이드 기준을 완벽하게 만족함."
+      rework_reason: ""
+      abandon_reason: ""
+      proposed_guideline_revision: ""
+
+  # 레코드 2: 심의 대기 단계 (Under Review) - C2 공격 시나리오 (보완 무시 즉시 재상신) 시작점
+  - type: Sheet
+    id: S-2001
+    status: under_review
+    attributes:
+      engineer: eng-1
+      target_capacity: 4900
+      target_energy: 17.8
+      target_porosity: 26
+      target_np_balance: 1.07
+      height: 70.0
+      diameter: 21.0
+      l2_height: 68.5
+      top_cap: topcap-21700
+      can: can-21700
+      anode_width: 65.0
+      cathode_width: 63.5
+      separator_width: 67.0
+      formula: "NMC811-Gr"
+      materials: "Single-Crystal-NMC811"
+      loading: 24.5
+      thickness: 128
+      length: 1040
+      electrolyte_type: "LiPF6-EC-EMC"
+      injection_amount: 6.0
+      injection_fraction: 0.86
+      iteration_count: 1
+      max_iterations: 5
+      is_target_achievable: "yes"
+      is_guideline_satisfied: "no"
+      is_product_allowed: "yes"
+      analysis_report_attached: "no"
+      has_rework_reason: "yes"
+      has_abandon_reason: "no"
+      has_revision_proposal: "no"
+      # 개선 1 & 2: 채택 후보 및 Waiver
+      has_selected_candidate: "no"
+      selected_candidate: ""
+      has_waiver_approval: "no"
+      waiver_approver: ""
+      electrochemical_analysis_report: "고에너지밀도 특화 모델로 가이드 미달이나 제품군 특성상 허용 가능."
+      rework_reason: "극판 로딩 편차 보완 및 젤리롤 권취 장력 재조정 필요"
+      abandon_reason: ""
+      proposed_guideline_revision: ""
+
+  # 레코드 3: 심의 대기 단계 (Under Review) - 셀프 승인 공격 테스트용
+  - type: Sheet
+    id: S-3001
+    status: under_review
+    attributes:
+      engineer: eng-reviewer-1
+      target_capacity: 5000
+      target_energy: 18.2
+      target_porosity: 25
+      target_np_balance: 1.08
+      height: 70.0
+      diameter: 21.0
+      l2_height: 68.5
+      top_cap: topcap-21700
+      can: can-21700
+      anode_width: 65.0
+      cathode_width: 63.5
+      separator_width: 67.0
+      formula: "NMC811-Gr"
+      materials: "Single-Crystal-NMC811"
+      loading: 25.0
+      thickness: 130
+      length: 1050
+      electrolyte_type: "LiPF6-EC-EMC"
+      injection_amount: 6.2
+      injection_fraction: 0.88
+      iteration_count: 0
+      max_iterations: 5
+      is_target_achievable: "yes"
+      is_guideline_satisfied: "yes"
+      is_product_allowed: "no"
+      analysis_report_attached: "yes"
+      has_rework_reason: "no"
+      has_abandon_reason: "no"
+      has_revision_proposal: "no"
+      # 개선 1 & 2: 채택 후보 및 Waiver
+      has_selected_candidate: "no"
+      selected_candidate: ""
+      has_waiver_approval: "no"
+      waiver_approver: ""
+      electrochemical_analysis_report: "정상"
+      rework_reason: ""
+      abandon_reason: ""
+      proposed_guideline_revision: ""

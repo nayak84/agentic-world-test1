@@ -1,16 +1,41 @@
-# 정상 시나리오 (RUN) — 여러분의 World로 바꾸세요.
-# 형식과 desk-check 방법: scenarios/README.md
-# 판정은 예측(PREDICTION)입니다. 리뷰에서 강사가 실제 Runtime 결과와 비교합니다.
+# 정상 시나리오 (Happy Path)
+# S-1001: 설계 입력 제출 -> 심의 상신 -> 검토자 최종 승인
+# desk-check: 상태 -> 역할 -> Guard -> Global constraint 순으로 검증
+
 scenario:
-  name: submit-happy-path
+  name: cylindrical-cell-design-happy-path
   kind: happy-path
-  record: R-1001                  # seed.yaml의 레코드 — status: draft 가 시작 상태
+  record: S-1001                  # seed.yaml의 레코드 (status: drafting)
   steps:
-    - input: "Submit request R-1001."
-      as: alex
-      transition: submit
+    - input: "설계 엔지니어가 기본 목표 특성 및 치수 입력을 완료하고 상세 설계를 시작한다."
+      as: eng-1
+      transition: submit_inputs
       expect: ALLOW
       because: >
-        State: R-1001 is draft = submit.from.
-        Role: alex has employee = submit.principal_role.
-        Guard C1_requester_only: principal.id (alex) == request.requester (alex) → true.
+        1. State: S-1001 is drafting = submit_inputs.from.
+        2. Role: eng-1 has role engineer = submit_inputs.principal_role.
+        3. Guards: submit_inputs has no guards -> ALLOW.
+
+    - input: "해석 에이전트가 가이드를 만족하는 설계 후보군에 대해 심의를 요청한다."
+      as: analysis-agent
+      transition: request_review
+      expect: ALLOW
+      because: >
+        1. State: Step 1 결과로 S-1001 is designing = request_review.from.
+        2. Role: analysis-agent has role analysis_agent = request_review.principal_role.
+        3. Guards:
+           - C_target_achievable: sheet.is_target_achievable ("yes") == "yes" -> true.
+           - C_guideline_or_product_allowed: sheet.is_guideline_satisfied ("yes") == "yes" -> true.
+        -> 모든 Guard 충족으로 ALLOW.
+
+    - input: "사람 검토자가 설계 후보군을 심의하고 최종 승인한다."
+      as: reviewer-1
+      transition: approve
+      expect: ALLOW
+      because: >
+        1. State: Step 2 결과로 S-1001 is under_review = approve.from.
+        2. Role: reviewer-1 has role reviewer = approve.principal_role.
+        3. Guards:
+           - C_no_self_review: principal.id (reviewer-1) != sheet.engineer (eng-1) -> true.
+           - C_require_selected_candidate: sheet.has_selected_candidate ("yes") == "yes" -> true.
+        -> 셀프 승인이 아니며 최종 채택 후보(CAND-01)가 지정되어 있으므로 ALLOW. 최종 상태 approved 전이 및 DesignReportGenerated 효과 발행.

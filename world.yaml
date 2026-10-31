@@ -1,63 +1,218 @@
 # ─────────────────────────────────────────────
-#  Your Superwork World
-#  이 파일이 여러분의 세계 전체입니다. 예시(구매 요청)를 여러분의 업무로 바꾸세요.
-#  결정의 이유는 assignment/ 에 기록하고,
-#  바꿀 때마다 반드시:  npm run validate
-#  이 파일은 저장소 루트에 두세요 (리뷰 Import 규약).
+#  Cylindrical Battery Design Automation & Review World
+#  AI 에이전트가 설계 후보를 도출·점검·해석하고, 사람 검토자가 심의한다.
+#  결정의 이유는 assignment/ 에 기록. 바꿀 때마다: npm run validate
 # ─────────────────────────────────────────────
 
 world:
-  id: my-world                     # 여러분의 World id (예: procurement-approval)
+  id: cylindrical-cell-design
   version: 0.1.0
-  spec: superwork.world/v1         # 언어 버전 — 수정하지 마세요
+  spec: superwork.world/v1
   mission: >
-    TODO: 이 세계가 완수하려는 일을 한 문장으로.
-    (예: Process purchase requests safely from submission to delivery.)
+    목표 특성과 설계가이드를 만족하는 원통형 전지 설계 후보군을 AI 기반으로 도출·해석하고,
+    설계 검토자의 심의를 거쳐 검증된 설계 정보 보고서를 생성하며 설계 지식(가이드 및 부품 DB)을 지속 갱신한다.
 
-# E — Entities: 무엇이 존재하고 추적되는가? (assignment/entity-decisions.md)
 entities:
-  # 예시 — 여러분의 도메인으로 교체하세요
-  Request:
+  Sheet:
     attributes:
       id: string
-      amount: money
-      requester: ref(Employee)
+      engineer: string                 # 시트 생성자 principal id
+      # 목표 특성
+      target_capacity: number
+      target_energy: number
+      target_porosity: number
+      target_np_balance: number
+      # 셀 치수
+      height: number
+      diameter: number
+      l2_height: number
+      top_cap: ref(MaterialPart)
+      can: ref(MaterialPart)
+      # Jelly roll
+      anode_width: number
+      cathode_width: number
+      separator_width: number
+      formula: string
+      materials: string
+      # 상세 설계값
+      loading: number
+      thickness: number
+      length: number
+      electrolyte_type: string
+      injection_amount: number
+      injection_fraction: number
+      # 루프 제어
+      iteration_count: number
+      max_iterations: number
+      # 판단 플래그 ("yes" / "no")
+      is_target_achievable: string
+      is_guideline_satisfied: string
+      is_product_allowed: string
+      analysis_report_attached: string
+      has_rework_reason: string
+      has_abandon_reason: string
+      has_revision_proposal: string
+      # 개선 1 & 2: 채택 후보 및 사전 예외 승인(Waiver)
+      selected_candidate: string       # 최종 채택된 후보 ID
+      has_selected_candidate: string   # "yes" / "no"
+      waiver_approver: string          # 예외 승인한 책임자 ID
+      has_waiver_approval: string      # "yes" / "no"
+      # 기록용 텍스트
+      electrochemical_analysis_report: string
+      rework_reason: string
+      abandon_reason: string
+      proposed_guideline_revision: string
       status: state
-    owned_state: true              # 상태기계를 갖는 엔티티는 하나로 시작하세요
-  Employee:
+    owned_state: true
+  CandidateCase:
     attributes:
       id: string
-      name: string
-      manager: ref(Employee)
+      sheet: ref(Sheet)
+      loading: number
+      thickness: number
+      length: number
+  DesignGuideline:
+    attributes:
+      id: string
+      criterion: string
+  MaterialPart:
+    attributes:
+      id: string
+      category: string
+      spec: string
 
-# S — States: 주인공 Entity가 흐름 속 어디에 있는가?
 states:
-  Request:
-    - draft
-    - submitted
-    # TODO: 여러분의 상태들
+  Sheet:
+    - drafting
+    - designing
+    - under_review
+    - revision_pending
+    - approved
+    - abandoned
 
-terminal_states: []                # 최종 사실 (예: [closed, rejected])
+terminal_states: [approved, abandoned]
 
-# T — Transitions: 무엇이 상태를 바꾸고, 누가 할 수 있는가?
 transitions:
-  submit:
-    from: draft
-    to: submitted
-    principal_role: employee
-    guards: [C1_requester_only]
+  submit_inputs:
+    from: drafting
+    to: designing
+    principal_role: engineer
+  rollback_to_spec:
+    from: designing
+    to: drafting
+    principal_role: design_agent
+    guards: [C_target_unachievable]
+  re_design:
+    from: designing
+    to: designing
+    principal_role: design_agent
+    guards: [C_target_achievable, C_guideline_unsatisfied, C_within_iteration_limit]
+  fail_design:
+    from: designing
+    to: abandoned
+    principal_role: design_agent
+    guards: [C_guideline_unsatisfied, C_iterations_exhausted]
+    effects: [DesignFailureReportGenerated]
+  request_review:
+    from: designing
+    to: under_review
+    principal_role: analysis_agent
+    guards: [C_target_achievable, C_guideline_or_product_allowed, C_no_pending_rework]
+  request_rework:
+    from: under_review
+    to: designing
+    principal_role: reviewer
+    guards: [C_no_self_review, C_require_rework_reason]
+  abandon:
+    from: under_review
+    to: abandoned
+    principal_role: reviewer
+    guards: [C_no_self_review, C_require_abandon_reason]
+    effects: [DesignFailureReportGenerated]
+  approve:
+    from: under_review
+    to: approved
+    principal_role: reviewer
+    guards: [C_no_self_review, C_require_selected_candidate]
+    effects: [DesignReportGenerated]
+  approve_with_revision:
+    from: under_review
+    to: revision_pending
+    principal_role: reviewer
+    guards: [C_no_self_review, C_require_revision_proposal, C_require_selected_candidate]
+  apply_guideline_revision:
+    from: revision_pending
+    to: approved
+    principal_role: guideline_db_agent
+    guards: [C_require_revision_proposal]
+    effects: [GuidelineRevisionApplied, DesignReportGenerated]
 
-# C — Constraints: 무엇이 절대 허용되면 안 되는가?
 constraints:
-  C1_requester_only:
-    expr: principal.id == request.requester
-    message: Only the requester can submit.
+  C_target_unachievable:
+    expr: sheet.is_target_achievable == "no"
+    message: 목표 특성 구현이 가능한 설계는 기본 사양으로 롤백할 수 없습니다.
+  C_target_achievable:
+    expr: sheet.is_target_achievable == "yes"
+    message: 목표 특성을 구현할 수 없는 설계입니다. 셀 치수·Jelly roll·목표 특성 단계로 롤백하세요.
+    on_fail_hint: rollback_to_spec
+  C_guideline_unsatisfied:
+    expr: sheet.is_guideline_satisfied == "no"
+    message: 설계가이드를 이미 만족하는 설계는 재설계하거나 실패 종결할 수 없습니다.
+    on_fail_hint: request_review
+  C_within_iteration_limit:
+    expr: sheet.iteration_count < sheet.max_iterations
+    message: 최대 재설계 횟수에 도달했습니다. 더 이상 재설계할 수 없습니다.
+    on_fail_hint: fail_design
+  C_iterations_exhausted:
+    expr: sheet.iteration_count >= sheet.max_iterations
+    message: 재설계 횟수가 남아 있는 설계는 실패 종결할 수 없습니다.
+    on_fail_hint: re_design
+  C_guideline_or_product_allowed:
+    expr: sheet.is_guideline_satisfied == "yes" or (sheet.is_product_allowed == "yes" and sheet.has_waiver_approval == "yes")
+    message: 설계가이드를 불만족하는 설계는 책임자의 사전 예외 승인(Waiver) 없이는 심의에 상신할 수 없습니다.
+    on_fail_hint: re_design
+  C_no_pending_rework:
+    expr: sheet.has_rework_reason == "no"
+    message: 해결되지 않은 재작업 지시 사유가 남아있는 설계는 심의에 다시 상신할 수 없습니다.
+    on_fail_hint: re_design
+  C_no_self_review:
+    expr: principal.id != sheet.engineer
+    message: 설계 시트를 작성한 엔지니어는 자신의 시트를 심의(승인·재작업·폐기)할 수 없습니다.
+  C_require_selected_candidate:
+    expr: sheet.has_selected_candidate == "yes"
+    message: 최종 승인 시에는 심의를 통과한 1개의 채택 후보(selected_candidate)를 반드시 지정해야 합니다.
+  C_require_rework_reason:
+    expr: sheet.has_rework_reason == "yes"
+    message: 재작업 지시에는 사유가 반드시 기록되어야 합니다.
+  C_require_abandon_reason:
+    expr: sheet.has_abandon_reason == "yes"
+    message: 설계 폐기에는 사유가 반드시 기록되어야 합니다.
+  C_require_revision_proposal:
+    expr: sheet.has_revision_proposal == "yes"
+    message: 검토자가 승인한 설계가이드 개정안 없이는 가이드를 개정할 수 없습니다.
 
-# 행위자 — 시나리오의 `as`는 여기의 id를 씁니다
 principals:
-  - id: alex
-    name: Alex
-    roles: [employee]
-  - id: blake
-    name: Blake
-    roles: [employee]
+  - id: eng-1
+    name: Engineer 1
+    roles: [engineer]
+  - id: reviewer-1
+    name: Reviewer 1 (person)
+    roles: [reviewer]
+  - id: eng-reviewer-1
+    name: Engineer & Reviewer Dual Role
+    roles: [engineer, reviewer]
+  - id: waiver-approver-1
+    name: Safety & Product Lead (person)
+    roles: [waiver_approver]
+  - id: design-agent
+    name: Design Agent
+    roles: [design_agent]
+  - id: analysis-agent
+    name: Electrochemical Analysis Agent
+    roles: [analysis_agent]
+  - id: guideline-agent
+    name: Guideline DB Agent
+    roles: [guideline_db_agent]
+  - id: material-agent
+    name: Material DB Agent
+    roles: [material_db_agent]

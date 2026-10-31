@@ -1,17 +1,34 @@
-# 공격 시나리오 (BREAK) — 여러분의 World가 막아야 하는 일을 "일어나게" 시도합니다.
-# 형식과 desk-check 방법: scenarios/README.md · 기록: assignment/break-fix.md
-# 판정은 예측(PREDICTION)입니다. 리뷰에서 강사가 실제 Runtime 결과와 비교합니다.
+# 공격 시나리오 (Adversarial / BREAK)
+# 시나리오: 재작업 지시 후 보완 설계 없이 직전 플래그를 악용하여 즉시 재상신 시도 (C2 취약점 방어 확인)
+# 지키려는 안전 속성: 검토자가 재작업을 지시한 설계는 보완 재설계 없이 즉시 다시 심의에 상신될 수 없다.
+
 scenario:
-  name: submit-by-someone-else
+  name: bypass-rework-and-resubmit
   kind: adversarial
-  record: R-1001
-  protects: "Only the requester can submit their own request."
+  record: S-2001                  # seed.yaml의 레코드 (status: under_review, has_rework_reason: "yes")
+  protects: "검토자가 재작업을 지시한 설계는 보완 재설계 없이 즉시 다시 심의에 상신될 수 없다."
   steps:
-    - input: "Submit request R-1001."
-      as: blake                   # 요청자가 아닌 다른 employee
-      transition: submit
-      expect: DENY                # 여러분의 예측 — 틀려도 괜찮습니다
+    - input: "검토자가 보완 사유를 남기고 전극 설계 재작업을 지시한다."
+      as: reviewer-1
+      transition: request_rework
+      expect: ALLOW
       because: >
-        State: R-1001 is draft = submit.from.
-        Role: blake has employee = submit.principal_role.
-        Guard C1_requester_only: principal.id (blake) == request.requester (alex) → false → DENY.
+        1. State: S-2001 is under_review = request_rework.from.
+        2. Role: reviewer-1 has role reviewer = request_rework.principal_role.
+        3. Guards:
+           - C_no_self_review: principal.id (reviewer-1) != sheet.engineer (eng-1) -> true.
+           - C_require_rework_reason: sheet.has_rework_reason ("yes") == "yes" -> true.
+        -> 정상적으로 designing 상태로 롤백 허용됨.
+
+    - input: "해석 에이전트가 재설계나 사유 해소 없이 기존 플래그를 이용해 즉시 다시 심의를 요청한다."
+      as: analysis-agent
+      transition: request_review
+      expect: DENY                     # FIX 후: 새 Guard C_no_pending_rework에 의해 차단(DENY)됨
+      because: >
+        1. State: Step 1 결과로 S-2001은 designing 상태임 = request_review.from.
+        2. Role: analysis-agent는 analysis_agent 역할을 가짐 = request_review.principal_role.
+        3. Guards:
+           - C_target_achievable: sheet.is_target_achievable ("yes") == "yes" -> true.
+           - C_guideline_or_product_allowed: sheet.is_product_allowed ("yes") == "yes" -> true.
+           - C_no_pending_rework: sheet.has_rework_reason ("yes") == "no" -> false!
+        -> Guard C_no_pending_rework 실패로 인해 전이가 안전하게 거부됨(DENY).
